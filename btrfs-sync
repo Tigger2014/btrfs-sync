@@ -126,10 +126,10 @@ while read entry; do SRCS+=( "$entry" ); done < <(
     src="$(cd "$s" &>/dev/null && pwd)" || { echo "$s not found"; exit 1; } #abspath
     btrfs subvolume show "$src" &>/dev/null && echo "0|$src" || \
     for dir in $( ls -drt "$src"/* 2>/dev/null ); do
-      DATE="$( btrfs su sh "$dir" 2>/dev/null | grep "Creation time:" | awk '{ print $3, $4 }' )" \
+      DATE="$( btrfs su sh "$dir"/snapshot 2>/dev/null | grep "Creation time:" | awk '{ print $3, $4 }' )" \
       || continue   # not a subvolume
       SECS=$( date -d "$DATE" +"%s" )
-      echo "$SECS|$dir"
+      echo "$SECS|$dir/snapshot"
     done
   done | sort -V | sed 's=.*|=='
 )
